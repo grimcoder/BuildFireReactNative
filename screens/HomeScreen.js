@@ -19,10 +19,21 @@ export default class HomeScreen extends React.Component {
     header: null,
   };
 
-  search(){
-    const data = new datastoreAPI();
-    data.get((...params)=>{
-      console.log(params)
+  Increment(){
+    const data2 = new datastoreAPI();
+
+    data2.search({},(...params)=>{
+
+      const data = params[1].map(i=>Number(i.data.counter))
+
+      data.sort((i,n) => Number(i) > Number(n))
+
+      const last = data[data.length-1]+1
+
+      console.log('last', last)
+
+      data2.insert({tag: '', obj: {counter: last}}, ()=>{})
+      
     })
 
   }
@@ -65,7 +76,7 @@ export default class HomeScreen extends React.Component {
 
         <View style={styles.tabBarInfoContainer}>
           <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-          <Button title='aaa' onPress={this.search}></Button>
+          <Button title='Increment' onPress={this.Increment}></Button>
           <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
             <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
           </View>
