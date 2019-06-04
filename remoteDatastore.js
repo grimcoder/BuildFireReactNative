@@ -9,6 +9,7 @@ function RemoteDatastore(appId, pluginId, instanceId, liveMode, dataStoreUrl) {
 }
 
 
+
 RemoteDatastore.prototype = {
     createReadUrl: function (tag, id, withDynamicData) {
 
@@ -58,48 +59,67 @@ RemoteDatastore.prototype = {
             context = this;
         }
 
-        if(bfUtils.http){
-            bfUtils.http.get(url).success(
-                function (data) {
-                    callback.apply (context, [null, data]);
-                }
-            ).error(
-                function (data, status, headers, config) {
-                    var errMsg = 'datastore GET Error with URL: ' + config.url;
-                    callback(errMsg);
-                    console.error('datastore GET Error: '+config.url, status );
-                }
-            );
-        }else{
-            callback('datastore GET Error:bfUtils.http is undefined. Try again later.');
-        }
+        fetch(url)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(myJson) {
+            callback.apply (context, [null, myJson]);
+        });
+    
     }
     , _httpPost: function (url, data, callback) {
 
-        bfUtils.http.post(url, data).success(
-            function (result) {
-                callback(null, result);
-            }
-        ).error(
-            function (data, status, headers, config) {
-                var errMsg = 'datastore POST Error with URL: ' + config.url;
-                callback(errMsg);
-                console.error('datastore POST Result: ', status, config.url);
-            }
-        );
+        // bfUtils.http.post(url, data).then(
+        //     function (result) {
+        //         callback(null, result);
+        //     }
+        // ).error(
+        //     function (data, status, headers, config) {
+        //         var errMsg = 'datastore POST Error with URL: ' + config.url;
+        //         callback(errMsg);
+        //         console.error('datastore POST Result: ', status, config.url);
+        //     }
+        // );
+        
+
+fetch(url, {
+  method: 'POST', // or 'PUT'
+  body: JSON.stringify(data), // data can be `string` or {object}!
+  headers:{
+    'Content-Type': 'application/json'
+  }
+}).then(res => res.json())
+.then(response => 
+    
+   { 
+    console.log(response)   
+    callback(null,  response) }
+    
+    )
+.catch(error => console.error('Error:', error));
+    
     }
+
+
+
     , _httpPut: function (url, data, callback) {
-        bfUtils.http.put(url, data).success(
-            function (result) {
-                callback(null, result);
+
+        fetch(url, {
+            method: 'PUT', // or 'PUT'
+            body: JSON.stringify(data), // data can be `string` or {object}!
+            headers:{
+              'Content-Type': 'application/json'
             }
-        ).error(
-            function (data, status, headers, config) {
-                var errMsg = 'datastore PUT Error with URL: ' + config.url;
-                callback(errMsg);
-                console.error('datastore PUT Result: ', status, config.url);
-            }
-        );
+          }).then(res => res.json())
+          .then(response => 
+              
+             { 
+              console.log(response)   
+              callback(null,  response) }
+              
+              )
+          .catch(error => console.error('Error:', error));
     }
     , get:function(id, tag, data, withDynamicData, callback){
         this._httpGet(this.createReadUrl(tag, id, withDynamicData), data, callback);

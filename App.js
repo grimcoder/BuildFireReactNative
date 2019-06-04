@@ -4,7 +4,11 @@ import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 // import window from './context'
 import DatastoreAPI from './datastoreAPI'
+const _XHR = GLOBAL.originalXMLHttpRequest ?  
+    GLOBAL.originalXMLHttpRequest :           
+    GLOBAL.XMLHttpRequest                     
 
+XMLHttpRequest = _XHR
 
 
 export default class App extends React.Component {
@@ -52,8 +56,6 @@ export default class App extends React.Component {
   };
 
   _handleLoadingError = error => {
-    // In this case, you might want to report the error to your error
-    // reporting service, for example Sentry
     console.warn(error);
   };
 

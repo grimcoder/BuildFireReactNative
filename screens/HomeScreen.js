@@ -12,11 +12,20 @@ import {
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
+import datastoreAPI from './../datastoreAPI'
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+
+  search(){
+    const data = new datastoreAPI();
+    data.get((...params)=>{
+      console.log(params)
+    })
+
+  }
 
   render() {
     return (
@@ -56,7 +65,7 @@ export default class HomeScreen extends React.Component {
 
         <View style={styles.tabBarInfoContainer}>
           <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-          <Button title='aaa' onPress='()=>{}'></Button>
+          <Button title='aaa' onPress={this.search}></Button>
           <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
             <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
           </View>
